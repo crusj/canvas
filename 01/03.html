@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        body {
+            background: #ddd;
+        }
+
+        #canvas {
+            background: #fff;
+            border: thin inset #fff;
+        }
+    </style>
+</head>
+<body>
+<canvas id="canvas" width="600" height="400">
+</canvas>
+</body>
+</html>
+<script>
+    var canvas = document.getElementById('canvas');
+    var context = canvas.getContext('2d');
+    context.lineJoin = 'round';
+    context.lineWidth = 30;
+    context.font = '24px Helvetica';
+    context.fillText('click here', 175, 40);
+    context.strokeStyle = 'goldenrod';
+    context.strokeRect(75, 100, 200, 200);
+    context.fillStyle = 'rgba(0,0,255,0.5)';
+    context.fillRect(300, 100, 200, 200);
+    context.canvas.onmousedown = function (e) {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+    }
+</script>

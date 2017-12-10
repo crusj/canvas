@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        body {
+            background: #ddd;
+        }
+
+        #canvas {
+            background: #fff;
+            border: thin inset #fff;
+        }
+    </style>
+</head>
+<body>
+<canvas id="canvas" width="600" height="400">
+</canvas>
+</body>
+</html>
+<script>
+    var canvas = document.getElementById('canvas');
+    var context = canvas.getContext('2d');
+    //var lineGradient = context.createLinearGradient(0, 0, canvas.width, 0);
+    var lineGradient = context.createLinearGradient(0, 0, canvas.width,0);
+    lineGradient.addColorStop(0, 'blue');
+    lineGradient.addColorStop(0.25, 'white');
+    lineGradient.addColorStop(0.5, 'purple');
+    lineGradient.addColorStop(0.75, 'red');
+    lineGradient.addColorStop(1, 'yellow');
+
+    context.fillStyle = lineGradient;
+    context.rect(0, 0, canvas.width, canvas.height);
+    context.fill();
+</script>

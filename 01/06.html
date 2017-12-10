@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        #canvas {
+            background: #eee;
+            border: thin solid cornflowerblue;
+        }
+    </style>
+</head>
+<body>
+<div id="radios">
+    <input type="button" id="repeat" name="repeat" value="repeat"/>
+    <input type="button" id="repeatX" name="repeatX" value="repeat-x"/>
+    <input type="button" id="repeatY" name="repeatY" value="repeat-Y"/>
+    <input type="button" id="noRepeat" name="noRepeat" value="no-repeat"/>
+</div>
+<canvas id="canvas" width="800" height="600">
+
+</canvas>
+</body>
+</html>
+<script>
+    var canvas = document.getElementById('canvas');
+    var context = canvas.getContext('2d');
+    var repeat = document.getElementById('repeat');
+    var repeatX = document.getElementById('repeatX');
+    var repeatY = document.getElementById('repeatY');
+    var noRepeat = document.getElementById('noRepeat');
+    var img = new Image();
+
+    function fillCanvasWithPattern(str) {
+        var pattern = context.createPattern(img, str);
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        context.fillStyle = pattern;
+        context.rect(0, 0, canvas.width, canvas.height);
+        context.fill();
+    }
+    repeat.onclick = function(e){
+        fillCanvasWithPattern('repeat')
+    };
+    repeatX.onclick = function(e){
+        fillCanvasWithPattern('repeat-x')
+    };
+    repeatY.onclick = function(e){
+        fillCanvasWithPattern('repeat-y')
+    };
+    noRepeat.onclick = function(e){
+        fillCanvasWithPattern('no-repeat')
+    };
+    img.src = "../img/accer.jpg";
+    img.onload = function(){
+        fillCanvasWithPattern('repeat');
+    }
+</script>

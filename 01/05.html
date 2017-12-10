@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        body {
+            background: #ddd;
+        }
+
+        #canvas {
+            background: #fff;
+            border: thin inset #fff;
+        }
+    </style>
+</head>
+<body>
+<canvas id="canvas" width="600" height="400">
+</canvas>
+</body>
+</html>
+<script>
+    var canvas = document.getElementById('canvas');
+    var context = canvas.getContext('2d');
+    var radialGradient = context.createRadialGradient(
+        canvas.width/3,canvas.height,10,
+        canvas.width/2,0,90
+    );
+    radialGradient.addColorStop(0, 'blue');
+    radialGradient.addColorStop(0.25, 'white');
+    radialGradient.addColorStop(0.5, 'purple');
+    radialGradient.addColorStop(0.75, 'red');
+    radialGradient.addColorStop(1, 'yellow');
+
+    context.fillStyle = radialGradient;
+    context.rect(0, 0, canvas.width, canvas.height);
+    context.fill();
+</script>

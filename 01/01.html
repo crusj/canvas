@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        body{
+            background: #ddd;
+        }
+        #canvas{
+            background: #fff;
+            border: thin inset #fff;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas" width="600px" height="300px">
+        你的浏览器不支持canvas
+    </canvas>
+</body>
+</html>
+<script>
+    var canvas = document.getElementById('canvas');
+    var context = canvas.getContext('2d');
+    context.font = '38px Arial';
+    context.fillStyle = 'cornflowerblue';
+    context.strokeStyle = 'blue';
+    context.fillText('Hello canvas',canvas.width/2 - 150, canvas.height/2 + 15);
+    context.strokeText('Hello canvas',canvas.width/2 - 150, canvas.height/2 + 15);
+</script>
