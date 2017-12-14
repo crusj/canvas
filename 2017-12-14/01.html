@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        body {
+            background: #ddd;
+        }
+
+        #canvas {
+            background: #fff;
+            border: thin inset #fff;
+        }
+    </style>
+</head>
+<body>
+<canvas id="canvas" width="600" height="300"></canvas>
+</body>
+</html>
+<script>
+    var context = document.getElementById("canvas").getContext('2d');
+    var linear = context.createLinearGradient(0, 0, context.canvas.width, 0);
+    linear.addColorStop(0, 'red');
+    linear.addColorStop(0.25, 'purple');
+    linear.addColorStop(0.5, 'goldenrod');
+    linear.addColorStop(1, 'rgb(224, 124, 53)');
+    context.arc(300, 150, 50, 0, Math.PI * 2);
+    context.moveTo(380,150);
+    context.arc(300, 150, 80, 0, Math.PI * 2, true);
+
+    context.moveTo(300, 100);
+    context.lineTo(250, 150);
+    context.lineTo(300, 200);
+    context.lineTo(350, 150);
+    context.lineTo(300, 100);
+
+
+    context.moveTo(300 - 50*2/3,150 - 50*2/3);
+    context.lineTo(300 - 50*2/3,150 - 50*2/3 + Math.sqrt(5000));
+    context.lineTo(300 - 50*2/3 + Math.sqrt(5000)-3 , 150 - 50*2/3 + Math.sqrt(5000));
+    context.lineTo(300 - 50*2/3 + Math.sqrt(5000)-3,150 - 50*2/3);
+    context.lineTo(300 - 50*2/3,150 - 50*2/3);
+    context.moveTo(300 - 50*2/3 + Math.sqrt(5000)-3,150);
+    context.arc(300,150,Math.sqrt(5000)/2 - 2,0,Math.PI*2,true);
+    context.shadowColor = 'rgba(0,0,0,0.5)';
+    context.shadowOffsetX = 3;
+    context.shadowOffsetY = 3;
+    context.shadowBlur = 4;
+    context.fillStyle = linear;
+    context.fill();
+</script>

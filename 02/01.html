@@ -27,6 +27,7 @@
     context.stroke();
 
     context.beginPath();
+    context.lineWidth = '5';
     context.fillStyle = 'goldenrod';
     context.rect(20,90,60,60);
     context.fill();
@@ -42,6 +43,7 @@
     context.beginPath();
     context.strokeStyle = 'black';
     context.arc(200,50,30,0,(3/2)*Math.PI);
+    context.closePath();
     context.stroke();
 
     context.beginPath();
