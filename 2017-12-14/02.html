@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>绘制表格</title>
+    <style>
+        body{
+            background: #fff;
+        }
+        #canvas {
+            background: #fff;
+            border:5px inset #fff;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas" width="1000" height="600"></canvas>
+</body>
+</html>
+<script src="http://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
+        crossorigin="anonymous"></script>
+
+<script>
+    var context = document.getElementById('canvas').getContext("2d");
+    context.rect(200,100,600,400);
+    context.stroke();
+    var width = 20;//表格宽度为10
+    context.lineWidth = 1;//线宽
+    context.strokeStyle = 'rgba(216,216,216,0.1)';
+    for(var i = 100 + width - 0.5; i < 500; i += width) {
+        context.moveTo(200,i);
+        context.lineTo(800, i);
+        context.stroke()
+    }
+    for(var j= 200 + width -0.5; j < 800; j += width){
+        context.moveTo(j,100);
+        context.lineTo(j, 500);
+        context.stroke()
+    }
+    var t = context.canvas.toDataURL("image/png");
+    var img = new Image();
+    img.src = t;
+    $("body").append($(img));
+</script>

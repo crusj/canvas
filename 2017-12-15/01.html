@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>动态线条</title>
+    <style>
+        body {
+            background: #ddd;
+        }
+
+        #canvas {
+            background: #fff;
+            border: thin inset #fff;
+        }
+    </style>
+</head>
+<body>
+<canvas id="canvas" width="800" height="500"></canvas>
+<button id="clear">上一步</button>
+</body>
+</html>
+<script>
+    function DrawLine(context) {
+        this.context = context;
+        this.canvas = this.context.canvas;
+
+        this.startX = 0; //线条X轴起点
+        this.startY = 0; //线条Y轴起点
+        this.endX = 0; //线条X轴终点
+        this.endY = 0;//线条Y轴终点点
+
+        /**
+         *画线条并将状态存如栈
+         **/
+        this.draw = function () {
+
+            this.context.strokeStyle = 'goldenrod';
+            this.context.beginPath();
+            this.context.moveTo(this.startX - this.canvas.offsetLeft, this.startY - this.canvas.offsetTop);
+            this.context.lineTo(this.endX -this.canvas.offsetLeft, this.endY - this.canvas.offsetTop);
+            this.context.stroke();
+        };
+        /**
+         *
+         */
+        this.back = function () {
+            this.context.restore();
+        }
+    }
+
+
+    var context = document.getElementById("canvas").getContext("2d");
+    var _drawLine = new DrawLine(context);
+    var drag = false;
+    //鼠标点击
+    context.canvas.onmousedown = function (e) {
+        e.preventDefault();
+        _drawLine.startX = e.clientX;
+        _drawLine.startY = e.clientY;
+        //允许画画
+        drag = true;
+    };
+    //鼠标移动
+    context.canvas.onmousemove = function (e) {
+        e.preventDefault();
+        if(drag === false){
+            return;
+        }else{
+           _drawLine.endX = e.clientX;
+           _drawLine.endY = e.clientY;
+           _drawLine.draw();
+        }
+    };
+    context.canvas.onmouseup = function(e) {
+        e.preventDefault();
+        drag=false;
+    };
+
+    var  back = document.getElementById("clear");
+    back.onclick = function (e) {
+        e.preventDefault();
+        _drawLine.back();
+    }
+</script>
