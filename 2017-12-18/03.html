@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>圆弧</title>
+    <style>
+        body{
+            background: #ddd;
+        }
+        #canvas{
+            background: #fff;
+            border: thin inset #fff;
+        }
+    </style>
+</head>
+<body>
+    1.辅助线画圆 <br>
+    <canvas id="canvas" width="1000" height="600"></canvas>
+</body>
+</html>
+<script>
+    //画圆
+    CanvasRenderingContext2D.prototype.drawArc = function(sx,sy,ex,ey){
+        //计算半径
+        var a = ey - sy;
+        var b = ex - sx;
+        //夹角
+        var angle = Math.atan(a/b);
+        alert(angle * 180 / Math.PI);
+        //半径
+        var r = Math.abs(a / Math.sin(angle));
+        //画圆
+        this.beginPath();
+        this.arc(sx,sy,r,angle,Math.PI*2);
+        this.stroke();
+        this.lineTo(sx,sy);
+        this.stroke();
+    };
+    var context = document.getElementById("canvas").getContext("2d");
+    var draw = false;
+    var startX = 0;
+    var startY = 0;
+    var endX = 0;
+    var endY = 0;
+
+    //鼠标下
+    context.canvas.onmousedown = function (e){
+        startX = e.clientX - context.canvas.offsetLeft;
+        startY = e.clientY - context.canvas.offsetTop;
+        draw = true;
+    };
+    //鼠标移动
+    context.canvas.onmousemove = function(e){
+        if(draw === true){
+            endX = e.clientX - context.canvas.offsetLeft;
+            endY = e.clientY - context.canvas.offsetTop;
+            context.clearRect(0,0,context.canvas.width,context.canvas.height);
+            context.beginPath();
+            context.moveTo(startX,startY);
+            context.lineTo(endX,endY);
+            context.stroke();
+        }
+    };
+    //鼠标起
+    context.canvas.onmouseup = function (e){
+        //画圆
+        context.drawArc(startX,startY,endX,endY);
+        draw = false;
+    }
+
+</script>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>橡皮条</title>
+    <style>
+        body{
+            background: #ddd;
+        }
+        #canvas{
+            background: #fff;
+            border: thin inset #fff;
+        }
+        #zb {
+            background: #fff;
+            border: thin inset #fff;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas" width="1000" height="700"></canvas>
+    <div id="zb">
+        起点x轴坐标:<span id="startX"></span><br>
+        起点y轴坐标:<span id="startY"></span><br>
+        终点x轴坐标:<span id="endX"></span><br>
+        终点y轴坐标:<span id="endY"></span><br>
+    </div>
+</body>
+</html>
+<script>
+    var context = document.getElementById("canvas").getContext("2d");
+    context.lineWidth = 100;
+    context.strokeStyle = 'blue';
+    var sx = document.getElementById("startX");
+    var sy = document.getElementById("startY");
+    var ex = document.getElementById("endX");
+    var ey = document.getElementById("endY");
+    var draw = false;
+    var startX = 0;
+    var startY = 0;
+    var endX = 0;
+    var endY = 0;
+    var oldImage = null;
+    context.fillStyle = "white";
+    context.fillRect(0,0,context.canvas.width,context.canvas.height);
+    oldImage = context.getImageData(0,0,context.canvas.width,context.canvas.height);
+    //点击事件
+    context.canvas.onmousedown = function(e){
+        draw = true;
+        startX = e.clientX - context.canvas.offsetLeft;
+        startY = e.clientY - context.canvas.offsetTop;
+    };
+    //鼠标移动事件
+    context.canvas.onmousemove = function(e){
+        if(draw === true){
+            endX = e.clientX - context.canvas.offsetLeft;
+            endY = e.clientY - context.canvas.offsetTop;
+            context.clearRect(0,0,context.canvas.width,context.canvas.height);
+
+            if(oldImage !== null){
+                context.putImageData(oldImage,0,0);
+            }
+
+            context.beginPath();
+            context.strokeStyle = "rgb("+Math.round(Math.random() * 255)+','+Math.round(Math.random() * 255)+','+Math.round(Math.random()*255)+')';
+            context.moveTo(startX,startY);
+            context.lineTo(endX,endY);
+            context.stroke();
+
+            sx.innerHTML = startX;
+            sy.innerHTML = startY;
+            ex.innerHTML = endX;
+            ey.innerHTML = endY;
+
+        }
+    };
+    //鼠标松开事件
+    context.canvas.onmouseup = function(e) {
+        oldImage = context.getImageData(0,0,context.canvas.width,context.canvas.height);
+        draw = false;
+    }
+</script>
+

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>圆弧2</title>
+    <style>
+        body {
+            background: #ddd;
+        }
+
+        #canvas {
+            background: #fff;
+            border: thin inset #fff;
+        }
+    </style>
+</head>
+<body>
+<canvas id="canvas" width="600" height="400"></canvas>
+</body>
+</html>
+<script>
+    var context = document.getElementById('canvas').getContext("2d");
+
+    function roundedRect(cornerX, cornerY, width, height, cornerRadius) {
+        if (width > 0) {
+            context.moveTo(cornerX + cornerRadius, cornerY);
+        } else {
+            context.moveTo(cornerX - cornerRadius, cornerY);
+        }
+        context.arcTo(cornerX + width, cornerY, cornerX + width, cornerY + height, cornerRadius);
+    }
+
+    function drawRoundedRect(strokeStyle, fillStyle, cornerX, cornerY, width, height, cornerRadius) {
+        context.beginPath();
+        roundedRect(cornerX, cornerY, width, height, cornerRadius);
+        context.lineWidth = 0.5;
+        context.strokeStyle = strokeStyle;
+        context.fillStyle = fillStyle;
+        context.stroke();
+        context.fill();
+    }
+
+    //init
+    drawRoundedRect('blue', 'yellow', 50, 40, 100, 100, 20);
+</script>
