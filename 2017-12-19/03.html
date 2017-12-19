@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>正多边形</title>
+    <style>
+        body {
+            background: #ddd;
+        }
+
+        #canvas {
+            background: #fff;
+            border: thin inset #fff;
+        }
+    </style>
+</head>
+<body>
+<canvas id="canvas" width="1100" height="600"></canvas>
+</body>
+</html>
+<script>
+    var context = document.getElementById("canvas").getContext("2d");
+    //正多边形圆心
+    const CENTER = {
+        x: 550,
+        y: 300
+    };
+    const RADIUS = 200;
+    context.strokeStyle = "gray";
+    context.lineWidth = 3;
+    context.arc(CENTER.x, CENTER.y, RADIUS, 0, Math.PI * 2);
+    context.stroke();
+
+    //坐标轴
+    //x轴
+    context.beginPath();
+    context.moveTo(250, 300);
+    context.lineTo(850, 300);
+    context.stroke();
+    //y轴
+    context.beginPath();
+    context.moveTo(550, 50);
+    context.lineTo(550, 550);
+    context.stroke();
+
+    //正多边形
+    function drawPolygon(sides, radius, centerX, centerY, angleS) {
+        //多边形内角度数
+        var angleI = (sides - 2) * 180 / sides;
+        //多边形外角
+        var angleO = 360 / sides;
+
+        //多边形点
+        var dots = [];
+        var dot = function (x, y) {
+            this.x = x;
+            this.y = y;
+        };
+        //起始点度数
+        var angleS = angleS || 0;
+
+        for (var i = angleS; i <= angleS + 360; i += angleO) {
+            dots.push(new dot(centerX + Math.sin(Math.PI / 180 * i) * radius, centerY - Math.cos(Math.PI / 180 * i) * radius))
+        }
+        //画边
+        for (var j = 0; j < dots.length - 1; j++) {
+            context.beginPath();
+            context.moveTo(dots[j].x, dots[j].y);
+            context.lineTo(dots[j + 1].x, dots[j + 1].y);
+            context.stroke();
+        }
+    }
+
+    drawPolygon(8, 200, 550, 300);
+
+    //起始角度
+    var angle = 0;
+    setInterval(function () {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        if (angle >= 360) {
+            angle = 0;
+        } else {
+            angle += 1;
+        }
+        drawPolygon(8, 200, 550, 300, angle);
+        context.fillStyle = "rgb(" + Math.round(Math.random() * 255) + ',' + Math.round(Math.random() * 255) + ',' + Math.round(Math.random() * 255) + ")";
+        context.fill();
+        context.beginPath();
+        context.arc(CENTER.x, CENTER.y, RADIUS, 0, Math.PI * 2, true);
+        context.stroke();
+    }, 50);
+</script>

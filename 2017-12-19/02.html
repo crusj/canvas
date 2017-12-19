@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>贝塞尔曲线三角箭头</title>
+    <style>
+        body {
+            background: #ddd;
+        }
+
+        #canvas {
+            background: #fff;
+            border: thin inset #fff;
+        }
+    </style>
+</head>
+<body>
+<canvas id="canvas" width="800" height="500"></canvas>
+</body>
+</html>
+<script>
+    var context = document.getElementById('canvas').getContext("2d");
+    var canvas = context.canvas;
+    //角开口三角形
+    const SIDE_LENGTH = 200;//边长
+    const COS_6 = Math.cos(Math.PI / 6);
+    const SIN_6 = Math.sin(Math.PI / 6);
+    const JX = 20;
+    context.lineWidth = 5;
+    context.strokeStyle = "cornflowerblue";
+    //右边
+    var dot1 = {
+        x: 400 + JX * SIN_6,
+        y: 150 + JX * COS_6
+    };
+    var dot2 = {
+        x: 400 + SIN_6 * (SIDE_LENGTH - JX),
+        y: 150 + COS_6 * (SIDE_LENGTH - JX)
+    };
+    context.moveTo(dot1.x, dot1.y);
+    context.lineTo(dot2.x, dot2.y);
+    context.stroke();
+
+    //左边
+    context.beginPath();
+    var dot3 = {
+        x: 400 - JX * SIN_6,
+        y: 150 + JX * COS_6
+    };
+    var dot4 = {
+        x: 400 - SIN_6 * (SIDE_LENGTH - JX),
+        y: 150 + COS_6 * (SIDE_LENGTH - JX)
+    };
+    context.moveTo(dot3.x, dot3.y);
+    context.lineTo(dot4.x, dot4.y);
+    context.stroke();
+
+    //下边
+    context.beginPath();
+    var dot5 = {
+        x: 400 - SIDE_LENGTH / 2 + SIN_6 * JX,
+        y: 150 + COS_6 * SIDE_LENGTH
+    };
+    var dot6 = {
+        x: 400 + SIDE_LENGTH / 2 - SIN_6 * JX,
+        y: 150 + COS_6 * SIDE_LENGTH
+    };
+    context.moveTo(dot5.x, dot5.y);
+    context.lineTo(dot6.x, dot6.y);
+    context.stroke();
+
+    //贝塞尔曲线顶角
+    context.beginPath();
+    context.moveTo(dot3.x, dot3.y);
+    context.quadraticCurveTo(400, 150, dot1.x, dot1.y);
+    context.stroke();
+
+    //贝塞尔曲线左角
+    context.beginPath();
+    context.moveTo(dot5.x, dot5.y);
+    context.quadraticCurveTo(400 - SIN_6 * SIDE_LENGTH, 150 + COS_6 * SIDE_LENGTH, dot4.x,dot4.y);
+    context.stroke();
+
+    //贝塞尔曲线右角
+    context.beginPath();
+    context.moveTo(dot6.x,dot6.y);
+    context.quadraticCurveTo(400 + SIN_6 * SIDE_LENGTH, 150 + COS_6 * SIDE_LENGTH, dot2.x,dot2.y);
+    context.stroke();
+
+</script>
