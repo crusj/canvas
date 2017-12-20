@@ -69,6 +69,8 @@
             context.lineTo(dots[j + 1].x, dots[j + 1].y);
             context.stroke();
         }
+        context.fillStyle = 'green';
+        context.fill();
     }
 
     drawPolygon(8, 200, 550, 300);
@@ -83,10 +85,11 @@
             angle += 1;
         }
         drawPolygon(8, 200, 550, 300, angle);
-        context.fillStyle = "rgb(" + Math.round(Math.random() * 255) + ',' + Math.round(Math.random() * 255) + ',' + Math.round(Math.random() * 255) + ")";
-        context.fill();
+/*        context.beginPath();
+        context.arc(CENTER.x, CENTER.y, RADIUS + 10, 0, Math.PI * 2, true);
+        context.stroke();*/
         context.beginPath();
-        context.arc(CENTER.x, CENTER.y, RADIUS, 0, Math.PI * 2, true);
+        context.arc(CENTER.x, CENTER.y, RADIUS, 0, Math.PI * 2);
         context.stroke();
-    }, 50);
+    }, 20);
 </script>
