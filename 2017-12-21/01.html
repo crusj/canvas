@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>画布交互判断是否在路径</title>
+</head>
+<body>
+    <canvas id="canvas" width="700" height="500"></canvas>
+</body>
+</html>
+<script>
+    let context = document.getElementById("canvas").getContext("2d");
+    let canvas = context.canvas;
+    context.beginPath();
+    context.moveTo(200,200);
+    context.lineTo(200,300);
+    context.lineTo(100,300);
+    context.lineTo(100,200);
+    context.lineTo(200,200);
+    context.stroke();
+    document.onclick = function(e){
+        alert(context.isPointInPath(e.clientX,e.clientY));
+    }
+</script>

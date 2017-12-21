@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>多边形创建以及移动</title>
+    <style>
+        body {
+            background: #ddd;
+        }
+
+        #canvas {
+            background: #fff;
+            border: thin inset #fff;
+        }
+    </style>
+</head>
+<body>
+<h3>多边形的创建以及移动</h3>
+<button id="draw">画图模式</button>
+<button style="margin-left: 20px" id="edit">编辑模式</button>
+<br>
+<canvas id="canvas" width="1000" height="500"></canvas>
+</body>
+</html>
+<script>
+    let context = document.getElementById("canvas").getContext("2d");
+    let canvas = context.canvas;
+
+    function Drawing(context) {
+        this.context = context;//画布上下文
+        this.model = 'draw';//画图模式，draw,edit
+        this.one = Math.PI / 180;
+        this.drawing = false;
+        this.preCanvas = null;//画图模式上一副图
+        this.shapes = [];//所有矩形
+        this.editX = undefined;//编辑x点
+        this.editY = undefined;//编辑y点
+        this.editNumber = undefined;
+        this.editBegin = false;//可以开始移动
+        //多边形顶点
+        this.dot = function (x, y) {
+            this.x = x;
+            this.y = y;
+        };
+        //当前多边形各点的坐标
+        this.dots = [];
+
+        //正多边形
+        this.polygon = function (sides, sx, sy, r, start_angle) {
+            this.dots = [];
+            //计算多变行的外角
+            let outAngle = 360 / sides;
+            //各点坐标
+            for (let x = 0, i = start_angle; x < sides; x++, i += outAngle) {
+                this.dots.push(new this.dot(sx + Math.sin(this.one * i) * r, sy - Math.cos(this.one * i) * r));
+            }
+            //画图
+            for (let j = 0; j < this.dots.length; j++) {
+                this.context.beginPath();
+                this.context.moveTo(this.dots[j].x, this.dots[j].y);
+                if (j === this.dots.length - 1) {
+                    this.context.lineTo(this.dots[0].x, this.dots[0].y);
+                } else {
+                    this.context.lineTo(this.dots[j + 1].x, this.dots[j + 1].y);
+                }
+                this.context.stroke();
+            }
+
+        };
+        //鼠标按下事件
+        this.mouseDown = function (e) {
+            this.drawing = true;//开启画图模式
+            //鼠标坐标点
+            let eX = e.clientX - this.context.canvas.offsetLeft;
+            let eY = e.clientY - this.context.canvas.offsetTop;
+            if (this.model === 'draw') {
+                /*                //画图模式
+                                if (this.preCanvas !== null) {
+                                    this.clear();
+                                    this.context.putImageData(this.preCanvas, 0, 0);
+                                }*/
+                this.polygon(6, eX, eY, 100, 0);
+            } else if (this.model === 'edit') {
+                //重画各图形,寻找当前鼠标点击路径
+                let self = this;
+                this.clear();
+                this.shapes.forEach(function (t, index) {
+                    self.context.beginPath();
+                    for (let i = 0; i < t.length; i++) {
+                        if (i === 0) {
+                            self.context.moveTo(t[i].x, t[i].y);
+                        } else {
+                            self.context.lineTo(t[i].x, t[i].y);
+                        }
+                        if (i === t.length - 1) {
+                            self.context.lineTo(t[0].x, t[0].y);
+                        } else {
+                            self.context.lineTo(t[i + 1].x, t[i + 1].y);
+                        }
+                    }
+                    //判断当前点是否在路径中
+                    self.context.stroke();
+                    if (self.context.isPointInPath(t[0].x, t[0].y)) {
+                        self.editNumber = index;//操作元素索引
+                        self.editX = eX;
+                        self.editY = eY;
+                        self.editBegin = true;//开始移动标识
+                        return;
+                    }
+
+                })
+            }
+
+        };
+        //鼠标移动事件
+        this.mouseMove = function (e) {
+            if (this.drawing === false) {
+                return;
+            }
+            //清除画布
+            this.context.clearRect(0, 0, this.context.canvas.width, this.context.canvas.height);
+            //鼠标坐标点
+            let eX = e.clientX - this.context.canvas.offsetLeft;
+            let eY = e.clientY - this.context.canvas.offsetTop;
+            if (this.preCanvas !== null) {
+                this.context.putImageData(this.preCanvas, 0, 0);
+            }
+            //画图模式
+            if (this.model === 'draw') {
+                this.polygon(6, eX, eY, 100, 0);
+            } else if (this.model === 'edit') {
+                if (this.editBegin) {
+                    let dot = this.shapes[this.editNumber];
+                    this.context.beginPath();
+                    let newDot = [];
+                    for (let i = 0; i < dot.length; i++) {
+                        if (i === 0) {
+                            let x1 = dot[i].x + (eX - this.editX);
+                            let y1 = dot[i].y + (eY - this.editY);
+                            this.context.moveTo(x1, y1);
+                            newDot.push(new this.dot(x1, y1));
+                        } else {
+                            let x1 = dot[i].x + (eX - this.editX);
+                            let y1 = dot[i].y + (eY - this.editY);
+                            this.context.lineTo(x1, y1);
+                            newDot.push(new this.dot(x1, y1));
+                        }
+                        if (i === dot.length - 1) {
+                            let x2 = dot[0].x + (eX - this.editX);
+                            let y2 = dot[0].y + (eY - this.editY);
+                            this.context.lineTo(x2, y2);
+                        } else {
+                            let x2 = dot[i + 1].x + (eX - this.editX);
+                            let y2 = dot[i + 1].y + (eY - this.editY);
+                            this.context.lineTo(x2, y2);
+                            newDot.push(new this.dot(x2, y2));
+                        }
+                    }
+                    //更新对应图形的坐标点
+                    this.shapes[this.editNumber] = newDot;
+                    //清除并绘制
+                    this.clear();
+                    let self = this;
+                    this.shapes.forEach(function (t, index) {
+                        self.context.beginPath();
+                        for (let i = 0; i < t.length; i++) {
+                            if (i === 0) {
+                                self.context.moveTo(t[i].x, t[i].y);
+                            } else {
+                                self.context.lineTo(t[i].x, t[i].y);
+                            }
+                            if (i === t.length - 1) {
+                                self.context.lineTo(t[0].x, t[0].y);
+                            } else {
+                                self.context.lineTo(t[i + 1].x, t[i + 1].y);
+                            }
+                        }
+                        self.context.stroke();
+                    });
+                }
+
+            }
+        };
+        //鼠标up事件
+        this.mouseUp = function (e) {
+            if (this.model === 'draw') {
+                //关闭画图模式
+                this.drawing = false;
+                this.preCanvas = this.context.getImageData(0, 0, this.context.canvas.width, this.context.canvas.height);
+                //保存画好的图形,各坐标
+                this.shapes.push(this.dots);
+            }
+            if (this.model === 'edit') {
+                //关闭编辑
+                this.preCanvas = this.context.getImageData(0, 0, this.context.canvas.width, this.context.canvas.height);
+                this.editBegin = false;
+            }
+        };
+        //清除画布
+        this.clear = function () {
+            this.context.clearRect(0, 0, this.context.canvas.width, this.context.canvas.height);
+        };
+        //初始化,绑定事件
+        this.init = function () {
+            this.context.canvas.addEventListener('mousedown', event => this.mouseDown(event));
+            this.context.canvas.addEventListener('mousemove', event => this.mouseMove(event));
+            this.context.canvas.addEventListener('mouseup', event => this.mouseUp(event));
+        }
+    }
+
+    let draw = new Drawing(context);
+    draw.init();
+    //画图模式
+    document.getElementById("draw").addEventListener('click', function (e) {
+        draw.model = 'draw';
+        context.canvas.style.cursor = "default";
+    });
+    //编辑模式
+    document.getElementById("edit").addEventListener('click', function (e) {
+        draw.model = "edit";
+        context.canvas.style.cursor = "move";
+    })
+
+</script>
