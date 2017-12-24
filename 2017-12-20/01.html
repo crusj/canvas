@@ -100,7 +100,8 @@
                     }
                     //判断当前点是否在路径中
                     self.context.stroke();
-                    if (self.context.isPointInPath(t[0].x, t[0].y)) {
+                    if (self.context.isPointInPath(eX,eY)) {
+                        console.log(1);
                         self.editNumber = index;//操作元素索引
                         self.editX = eX;
                         self.editY = eY;
@@ -117,67 +118,45 @@
             if (this.drawing === false) {
                 return;
             }
-            //清除画布
-            this.context.clearRect(0, 0, this.context.canvas.width, this.context.canvas.height);
             //鼠标坐标点
             let eX = e.clientX - this.context.canvas.offsetLeft;
             let eY = e.clientY - this.context.canvas.offsetTop;
             if (this.preCanvas !== null) {
+                this.clear();
                 this.context.putImageData(this.preCanvas, 0, 0);
             }
             //画图模式
             if (this.model === 'draw') {
                 this.polygon(6, eX, eY, 100, 0);
-            } else if (this.model === 'edit') {
-                if (this.editBegin) {
-                    let dot = this.shapes[this.editNumber];
-                    this.context.beginPath();
-                    let newDot = [];
-                    for (let i = 0; i < dot.length; i++) {
-                        if (i === 0) {
-                            let x1 = dot[i].x + (eX - this.editX);
-                            let y1 = dot[i].y + (eY - this.editY);
-                            this.context.moveTo(x1, y1);
-                            newDot.push(new this.dot(x1, y1));
-                        } else {
-                            let x1 = dot[i].x + (eX - this.editX);
-                            let y1 = dot[i].y + (eY - this.editY);
-                            this.context.lineTo(x1, y1);
-                            newDot.push(new this.dot(x1, y1));
-                        }
-                        if (i === dot.length - 1) {
-                            let x2 = dot[0].x + (eX - this.editX);
-                            let y2 = dot[0].y + (eY - this.editY);
-                            this.context.lineTo(x2, y2);
-                        } else {
-                            let x2 = dot[i + 1].x + (eX - this.editX);
-                            let y2 = dot[i + 1].y + (eY - this.editY);
-                            this.context.lineTo(x2, y2);
-                            newDot.push(new this.dot(x2, y2));
-                        }
+            } else if (this.model === 'edit' && this.editBegin) {
+                let dot = this.shapes[this.editNumber];
+                console.log(dot);
+                this.context.beginPath();
+                let newDot = [];
+                console.log(newDot);
+                for (let i = 0; i < dot.length; i++) {
+                    //第一个点
+                    let x1 = dot[i].x + (eX - this.editX);
+                    let y1 = dot[i].y + (eY - this.editY);
+                    newDot.push(new this.dot(x1, y1));
+                    if (i === 0) {
+                        this.context.moveTo(x1, y1);
+                    } else {
+                        this.context.lineTo(x1, y1);
                     }
-                    //更新对应图形的坐标点
-                    this.shapes[this.editNumber] = newDot;
-                    //清除并绘制
-                    this.clear();
-                    let self = this;
-                    this.shapes.forEach(function (t, index) {
-                        self.context.beginPath();
-                        for (let i = 0; i < t.length; i++) {
-                            if (i === 0) {
-                                self.context.moveTo(t[i].x, t[i].y);
-                            } else {
-                                self.context.lineTo(t[i].x, t[i].y);
-                            }
-                            if (i === t.length - 1) {
-                                self.context.lineTo(t[0].x, t[0].y);
-                            } else {
-                                self.context.lineTo(t[i + 1].x, t[i + 1].y);
-                            }
-                        }
-                        self.context.stroke();
-                    });
+                    //最后一个点
+                    if (i === dot.length - 1) {
+                        let x2 = dot[0].x + (eX - this.editX);
+                        let y2 = dot[0].y + (eY - this.editY);
+                        this.context.lineTo(x2, y2);
+                    }
                 }
+                //更新对应图形的坐标点
+                this.shapes[this.editNumber] = newDot;
+                //清除并绘制
+                this.startDraw();
+                this.editX = eX;
+                this.editY = eY;
 
             }
         };
@@ -199,6 +178,26 @@
         //清除画布
         this.clear = function () {
             this.context.clearRect(0, 0, this.context.canvas.width, this.context.canvas.height);
+        };
+        this.startDraw = function () {
+            this.clear();
+            let self = this;
+            this.shapes.forEach(function (t) {
+                self.context.beginPath();
+                for (let i = 0; i < t.length; i++) {
+                    if (i === 0) {
+                        self.context.moveTo(t[i].x, t[i].y);
+                    } else {
+                        self.context.lineTo(t[i].x, t[i].y);
+                    }
+                    if (i === t.length - 1) {
+                        self.context.lineTo(t[0].x, t[0].y);
+                    } else {
+                        self.context.lineTo(t[i + 1].x, t[i + 1].y);
+                    }
+                }
+                self.context.stroke();
+            });
         };
         //初始化,绑定事件
         this.init = function () {
