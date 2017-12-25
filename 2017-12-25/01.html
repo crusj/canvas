@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>二次曲线拖动</title>
+    <style>
+        body {
+            background: #ddd;
+        }
+
+        #canvas {
+            background: #fff;
+            border: thin inset #fff;
+        }
+    </style>
+</head>
+<body>
+<div>
+    起点坐标:<span id="start"></span>
+    控制点坐标:<span id="control"></span>
+    描点坐标:<span id="end"></span>
+</div>
+<canvas id="canvas" width="1000" height="400"></canvas>
+</body>
+</html>
+<script>
+    let context = document.getElementById("canvas").getContext("2d");
+    let canvas = context.canvas;
+    let startX = 50;
+    let startY = 50;
+
+    context.lineWidth = 1;
+    //    context.moveTo(startX,startY);
+
+    //描绘二次方曲线
+    function DrawQuadratic(context) {
+        this.context = context;
+        this.dot = function (x, y) {
+            this.x = x;
+            this.y = y;
+        };
+        this.move = false;
+        //控制点坐标
+        this.control = new this.dot(0, 0);
+        //描点坐标
+        this.drawDot = new this.dot(0, 0);
+
+        //鼠标点击点
+        this.clickDot = new this.dot(0, 0);
+
+        this.setControl = function (x, y) {
+            this.control = new this.dot(x, y);
+        };
+        this.setDrawDot = function (x, y) {
+            this.drawDot = new this.dot(x, y);
+        };
+        //三个点
+        this.drawArc = function (e) {
+            //起点圆
+            this.context.beginPath();
+            this.context.arc(startX, startY, 4, 0, Math.PI * 2);
+            this.context.stroke();
+            this.context.fill();
+            //控制点圆
+            this.context.save();
+            if (this.move === true) {
+
+                this.context.fillStyle = "red";
+            }
+            this.context.beginPath();
+            this.context.arc(this.control.x, this.control.y, 8, 0, Math.PI * 2);
+            this.context.stroke();
+            this.context.fill();
+            //描点圆
+            this.context.restore();
+            this.context.beginPath();
+            this.context.arc(this.drawDot.x, this.drawDot.y, 4, 0, Math.PI * 2);
+            this.context.stroke();
+            this.context.fill();
+        };
+        //画描点
+        this.draw = function () {
+            this.context.clearRect(0, 0, this.context.canvas.width, this.context.canvas.height);
+            this.context.moveTo(startX, startY);
+            this.context.quadraticCurveTo(this.control.x, this.control.y, this.drawDot.x, this.drawDot.y);
+            this.context.stroke();
+            this.drawArc();
+        };
+        //点击圈
+        this.mouseDown = function (e) {
+            //遍历
+            this.context.beginPath();
+            this.context.arc(this.control.x, this.control.y, 8, 0, Math.PI * 2);
+            if (this.context.isPointInPath(e.clientX - this.context.canvas.offsetLeft, e.clientY - this.context.canvas.offsetTop)) {
+                this.move = true;
+                this.clickDot = new this.dot(e.clientX - this.context.canvas.offsetLeft, e.clientY - this.context.canvas.offsetTop);
+            }
+        };
+        //移动
+        this.mouseMove = function (e) {
+            e.preventDefault();
+            if (this.move === true) {
+                this.setControl(e.clientX - this.context.canvas.offsetLeft, e.clientY - this.context.canvas.offsetTop);
+                this.draw();
+
+            }
+        };
+        //鼠标起
+        this.mouseUp = function (e) {
+            this.move = false;
+
+        };
+        this.init = function () {
+            this.context.canvas.onmousedown = event => this.mouseDown(event);
+            this.context.canvas.onmousemove = event => this.mouseMove(event);
+            this.context.canvas.onmouseup = event => this.mouseUp(event);
+        };
+
+    }
+
+    let draw = new DrawQuadratic(context);
+    draw.init();
+    draw.setControl(50, 100);
+    draw.setDrawDot(250, 123);
+    draw.draw();
+</script>
