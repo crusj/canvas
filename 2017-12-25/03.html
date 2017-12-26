@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>多边形的旋转</title>
+    <style>
+        body {
+            background: #ddd;
+            margin: 0;
+            padding: 0;
+        }
+
+        #canvas {
+            background: #fff;
+            border: thin inset #fff;
+        }
+    </style>
+</head>
+<body>
+<canvas id="canvas" width="800" height="500"></canvas>
+</body>
+</html>
+<script>
+    let context = document.getElementById("canvas").getContext("2d");
+    let canvas = context.canvas;
+    let one = Math.PI / 180;
+
+    function RotatePolygon(context) {
+        this.context = context;
+        this.canvas = context.canvas;
+        //点
+        this.dot = function (x, y) {
+            this.x = x;
+            this.y = y;
+        };
+        //6边形
+        this.sides = 6;
+        //多边形外角度数
+        this.outAngle = 360 / this.sides;
+        //多边形外接圆半径
+        this.r = 150;
+        //多边形中心
+        this.centerDot = new this.dot(this.canvas.width / 2, this.canvas.height / 2);
+
+        //画正多边形
+        this.draw = function (angle) {
+            //起始度数
+            angle = angle || 0;
+            for (let a = angle; a <= 360 + angle; a = a + this.outAngle) {
+                let tmp = new this.dot(this.centerDot.x + Math.sin(a * one) * this.r, this.centerDot.y - Math.cos(a * one) * this.r);
+                if (a === angle) {
+                    this.context.moveTo(tmp.x, tmp.y);
+                } else {
+                    this.context.lineTo(tmp.x, tmp.y);
+                }
+            }
+            this.context.stroke();
+        };
+        //辅助多边形
+        this.helpPolygon = function () {
+            this.r = 200;
+            this.context.strokeStyle = "grey";
+            this.context.save();
+            obj.draw();
+            this.context.restore();
+        };
+        //辅助圆
+        this.helpArc = function () {
+            this.r = 200;
+            this.context.beginPath();
+            this.context.arc(this.centerDot.x, this.centerDot.y, this.r, 0, Math.PI * 2);
+            this.context.stroke();
+            //刻度,10度为一大度
+            this.context.strokeStyle = "rgba(0,0,0,0.5)";
+            for (let i = 0; i < 360; i++) {
+                let length = 3;//刻度长度
+                //大刻度
+                if (i % 10 === 0) {
+                    length = 5;
+                }
+                let tmp1 = new this.dot(
+                    this.centerDot.x + Math.sin(one * i) * this.r,
+                    this.centerDot.y - Math.cos(one * i) * this.r
+                );
+                let tmp2 = new this.dot(
+                    this.centerDot.x + Math.sin(one * i) * this.r * (100 - length) / 100,
+                    this.centerDot.y - Math.cos(one * i) * this.r * (100 - length) / 100
+                );
+                this.context.beginPath();
+                this.context.moveTo(tmp1.x, tmp1.y);
+                this.context.lineTo(tmp2.x, tmp2.y);
+                this.context.stroke();
+            }
+        }
+    }
+
+    let obj = new RotatePolygon(context);
+    obj.draw();
+    obj.helpPolygon();
+    obj.helpArc();
+
+    //w
+</script>
