@@ -17,6 +17,8 @@
     </style>
 </head>
 <body>
+<button id="edit">旋转</button>
+<br>
 <canvas id="canvas" width="800" height="500"></canvas>
 </body>
 </html>
@@ -24,6 +26,7 @@
     let context = document.getElementById("canvas").getContext("2d");
     let canvas = context.canvas;
     let one = Math.PI / 180;
+    let edit = false;
 
     function RotatePolygon(context) {
         this.context = context;
@@ -33,6 +36,7 @@
             this.x = x;
             this.y = y;
         };
+        this.hd = undefined;
         //6边形
         this.sides = 6;
         //多边形外角度数
@@ -41,13 +45,21 @@
         this.r = 150;
         //多边形中心
         this.centerDot = new this.dot(this.canvas.width / 2, this.canvas.height / 2);
-
+        //旋转辅助移动点
+        this.move = {
+            status: false,//是否可以旋转
+            start: undefined,//旋转起始点
+            end: undefined,//旋转结束点
+            angle: 0//旋转角度
+        };
         //画正多边形
-        this.draw = function (angle) {
+        this.draw = function (angle, r) {
             //起始度数
+            r = r || this.r;
             angle = angle || 0;
+            this.context.beginPath();
             for (let a = angle; a <= 360 + angle; a = a + this.outAngle) {
-                let tmp = new this.dot(this.centerDot.x + Math.sin(a * one) * this.r, this.centerDot.y - Math.cos(a * one) * this.r);
+                let tmp = new this.dot(this.centerDot.x + Math.sin(a * one) * r, this.centerDot.y - Math.cos(a * one) * r);
                 if (a === angle) {
                     this.context.moveTo(tmp.x, tmp.y);
                 } else {
@@ -57,11 +69,12 @@
             this.context.stroke();
         };
         //辅助多边形
-        this.helpPolygon = function () {
+        this.helpPolygon = function (angle) {
+            angle = angle || 0;
             this.r = 200;
-            this.context.strokeStyle = "grey";
             this.context.save();
-            obj.draw();
+            this.context.strokeStyle = "grey";
+            obj.draw(angle, 200);
             this.context.restore();
         };
         //辅助圆
@@ -91,13 +104,113 @@
                 this.context.lineTo(tmp2.x, tmp2.y);
                 this.context.stroke();
             }
+        };
+        //度数指针
+        this.pointer = function (x, y) {
+            x = x || this.centerDot.x;
+            y = y || this.centerDot.y - this.r;
+            this.context.save();
+            this.context.strokeStyle = "red";
+            //辅助线
+            this.context.beginPath();
+            this.context.moveTo(this.centerDot.x, this.centerDot.y);
+            this.context.lineTo(x, y);
+            this.context.stroke();
+            this.context.restore();
+            //辅助线箭头,先不画太难了
+        };
+        //擦除画布
+        this.clear = function () {
+            this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        };
+        this.mouseMove = function (e) {
+            //判断是否在辅助圆类
+            this.r = 200;
+            this.context.beginPath();
+            this.context.arc(this.centerDot.x, this.centerDot.y, this.r, 0, Math.PI * 2);
+            if (this.context.isPointInPath(e.clientX, e.clientY)) {
+                if (!this.move.status) {
+                    this.move.start = new this.dot(e.clientX, e.clientY);
+                    this.move.status = true;//开启旋转
+                    //起始弧度
+                    this.hd = Math.atan(Math.abs(this.move.start.y - this.centerDot.y) / Math.abs(this.move.start.x - this.centerDot.x));
+                } else {
+                    this.move.end = new this.dot(e.clientX, e.clientY);
+                    //计算旋转角度
+                    let c = Math.sqrt(Math.pow(this.move.start.x - this.move.end.x, 2) + Math.pow(this.move.start.y - this.move.end.y, 2));
+                    let a = Math.sqrt(Math.pow(this.move.start.x - this.centerDot.x, 2) + Math.pow(this.move.start.y - this.centerDot.y, 2));
+                    let b = Math.sqrt(Math.pow(this.move.end.x - this.centerDot.x, 2) + Math.pow(this.move.end.y - this.centerDot.y, 2));
+                    let angle = Math.acos((a * a + b * b - c * c) / (2 * a * b)) * 180 / Math.PI;//度数
+                    //判断旋转时针
+                    let vector = 1;
+                    //时针方向,已起始点与中心点的连线为半径，起始点为圆的起始点顺时针画圆，和逆时针画圆，分别对应图形的旋转方向
+                    let t = this.hd;
+                    if (this.move.start.x > this.centerDot.x) {
+                        //一四象限
+                        if (this.move.start.y > this.centerDot.y) {
+                            //一象限
+                            if (this.move.end.x > this.centerDot.x) {
+                                //1.4
+                                if (this.move.end.y < this.centerDot.y) {
+                                    //1
+                                } else {
+                                    t += Math.PI / 2;
+                                }
+                            } else {
+                                //2.3
+                                if (this.move.end.y < this.centerDot.y) {
+                                    //4
+                                    t += Math.PI / 3 * 2;
+                                }else{
+                                    //3
+                                    t += Math.PI;
+                                }
+
+                            }
+
+                        }
+                    } else {
+                    }
+                    console.log(t * 180 / Math.PI);
+                    //顺时针画半圆
+                    this.context.arc(this.centerDot.x, this.centerDot.y, b, t, Math.PI);
+                    if (this.context.isPointInPath(this.move.end.x, this.move.end.y)) {
+                        vector = 1;
+                    } else {
+                        vector = -1;
+                    }
+                    this.move.angle = angle * vector;//旋转角度
+                    this.clear();
+                    this.draw(0, 100);
+                    this.helpPolygon(this.move.angle);
+                    this.helpArc();
+                    obj.pointer(
+                        this.centerDot.x + Math.sin(one * this.move.angle) * this.r,
+                        this.centerDot.y - Math.cos(one * this.move.angle) * this.r
+                    );
+                    /*                    this.move.start.x = this.move.end.x;
+                                        this.move.start.y = this.move.end.y;*/
+                }
+
+            } else {
+                this.move.status = false;//关闭旋转
+            }
+        };
+        this.init = function () {
+            this.draw(0, 100);
+            this.helpPolygon();
+            this.helpArc();
+            this.pointer();
+            //绑定move事件
+            this.canvas.onmousemove = event => this.mouseMove(event);
         }
     }
 
     let obj = new RotatePolygon(context);
-    obj.draw();
-    obj.helpPolygon();
-    obj.helpArc();
+    obj.init();
 
-    //w
+    //开启旋转模式
+    document.getElementById("edit").onclick = function (e) {
+        edit = true;
+    }
 </script>
