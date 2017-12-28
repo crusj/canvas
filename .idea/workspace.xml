@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="6f553771-d523-4138-a528-75001026c865" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/2017-12-25/03.html" afterPath="$PROJECT_DIR$/2017-12-25/03.html" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -50,7 +49,7 @@
       <file leaf-file-name="03.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/2017-12-25/03.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2574">
+            <state relative-caret-position="534">
               <caret line="157" column="32" lean-forward="false" selection-start-line="157" selection-start-column="32" selection-end-line="157" selection-end-column="32" />
               <folding />
             </state>
@@ -165,13 +164,13 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scratches" />
       <pane id="Scope" />
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../xmc" />
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="settings.editor.selected.configurable" value="preferences.keymap" />
     <property name="JavaScriptWeakerCompletionTypeGuess" value="true" />
@@ -237,14 +236,16 @@
       <workItem from="1514291299693" duration="14940000" />
       <workItem from="1514337478702" duration="25000" />
       <workItem from="1514366558913" duration="24000" />
+      <workItem from="1514431893062" duration="107000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="124063000" />
+    <option name="totallyTimeSpent" value="124170000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="0" width="1366" height="723" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.109077595" sideWeight="0.4935484" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -650,7 +651,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/2017-12-25/03.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2574">
+        <state relative-caret-position="534">
           <caret line="157" column="32" lean-forward="false" selection-start-line="157" selection-start-column="32" selection-end-line="157" selection-end-column="32" />
           <folding />
         </state>
