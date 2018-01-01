@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>错切</title>
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        body{
+            background: #ddd;
+        }
+        #canvas{
+            background: #fff;
+            border: thin inset #fff;
+        }
+    </style>
+</head>
+<body>
+<canvas id="canvas" width="900" height="500"></canvas>
+</body>
+</html>
+<script>
+    let context = document.getElementById("canvas").getContext("2d");
+    let canvas = context.canvas;
+    context.font = "80px Palatino";
+    context.strokeText("HELLO WORLD",200,200);
+    //旋转
+    context.setTransform(
+        Math.cos(Math.PI/180 * 20),
+        Math.sin(Math.PI/180 * 20),
+        -Math.sin(Math.PI/180 * 20),
+        Math.cos(Math.PI/180 * 20),
+        0,0
+    );
+    //context.strokeText("HELLO WORLD",200,200);
+    //错切
+    context.transform(
+        1,0,0.75,1,0,0
+    );
+    context.strokeText("HELLO WORLD",200,200);
+</script>

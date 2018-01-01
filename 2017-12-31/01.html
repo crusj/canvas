@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>绘制镜像</title>
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        body{
+            background: #ddd;
+        }
+        #canvas{
+            background: #fff;
+            border: thin inset #fff;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas" width="900" height="500"></canvas>
+</body>
+</html>
+<script>
+    let context = document.getElementById("canvas").getContext("2d");
+    let canvas = context.canvas;
+    function draw(){
+        context.lineWidth = 1;
+        context.beginPath();
+        context.moveTo(100,99.5);
+        context.lineTo(200,99.5);
+        context.lineTo(150,150);
+        context.lineTo(100,99.5);
+        context.stroke();
+    }
+    draw();
+    //context.rotate(20*Math.PI/180);
+    //坐标平移
+    context.setTransform(1,0,0,1,50,50);
+    //缩放
+    context.setTransform(2,0,0,2,0,0);
+    //旋转
+    context.setTransform(Math.cos(45*Math.PI/180),Math.sin(45*Math.PI/180),-Math.sin(45*Math.PI/180),Math.cos(45*Math.PI/180),0,0);
+    draw();
+</script>
