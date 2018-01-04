@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>canvas进度条</title>
+    <style>
+        body {
+            background: #ddd;
+        }
+
+        #canvas {
+            background: #fff;
+            border: thin inset white;
+            width: 100%;
+            height: 100%;
+        }
+        #container{
+            width: 800px;
+            height: 500px;
+        }
+        #canvas{
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+<div id="container">
+    <canvas id="canvas" width="800" height="500"></canvas>
+</div>
+</body>
+</html>
+<script>
+    let context = document.getElementById("canvas").getContext("2d");
+
+    function Bar(context) {
+        this.context = context;
+        this.canvas = context.canvas;
+        this.dot = function (x, y) {
+            this.x = x;
+            this.y = y;
+        };
+        this.center = new this.dot(0, 0);//中心点
+        this.r = 0;//圆环半径
+        this.width = 0;//圆环宽度
+        this.currentAngle = 0;
+        this.angle = 0;
+        //圆环
+        this.circle = function () {
+            this.context.beginPath();
+            this.context.arc(this.center.x, this.center.y, this.r, 0, Math.PI * 2);
+            this.context.stroke();
+            this.context.beginPath();
+            this.context.arc(this.center.x, this.center.y, this.r + this.width, 0, Math.PI * 2);
+            this.context.stroke();
+
+        };
+        //填充个圆环
+        this.fillCircle = function (angle) {
+            //填充圆环
+            angle = Math.PI / 180 * angle;
+            this.context.beginPath();
+            this.context.arc(this.center.x, this.center.y, this.r + this.width, -Math.PI / 2, -Math.PI / 2 + angle);
+            this.context.lineTo(
+                this.center.x + this.r * Math.sin(angle),
+                this.center.y - this.r * Math.cos(angle),
+            );
+            this.context.arc(this.center.x, this.center.y, this.r, -Math.PI / 2 + angle, -Math.PI / 2, true);
+            this.context.lineTo(this.center.x, this.center.y - this.r - this.width);
+            this.context.fillStyle = "red";
+            this.context.lineWidth = 1.5;
+            this.context.fill();
+        };
+        this.action = function (e) {
+            if (this.currentAngle >= this.angle) {
+                clearInterval(this.interval);
+                this.currentAngle = 0;
+            } else {
+                this.currentAngle += 1;
+                this.fillCircle(this.currentAngle)
+            }
+        };
+        this.start = function (time) {
+            this.interval = setInterval(event => this.action(event), time);
+        };
+        this.init = function (x, y, r, width, percent) {
+            let width2 = this.canvas.width;
+            let height2=this.canvas.height;
+            if (window.devicePixelRatio) {
+                this.canvas.style.width = width2 + "px";
+                this.canvas.style.height = height2 + "px";
+                this.canvas.height = height2 * window.devicePixelRatio;
+                this.canvas.width = width2 * window.devicePixelRatio;
+                this.context.scale(window.devicePixelRatio, window.devicePixelRatio);
+            }
+            //圆心坐标
+            this.center = new this.dot(x, y);
+            //圆环
+            this.r = r;
+            this.width = width;
+            //this.circle();
+            this.angle = percent;
+            this.start(1);
+
+        }
+    }
+
+    let b = new Bar(context);
+    b.init(300, 200, 50, 5, 280)
+</script>
