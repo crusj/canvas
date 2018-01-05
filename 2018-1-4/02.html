@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>图形复合操作 </title>
+</head>
+<body>
+    <canvas id="canvas" height="600" width="800"></canvas>
+</body>
+</html>
+<script>
+    let ctx = document.getElementById("canvas").getContext("2d");
+    ctx.fillStyle = "red";
+    ctx.arc(400,300,100,0,Math.PI*2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.save();
+    ctx.globalCompositeOperation = "source-in";
+    ctx.fillStyle = "green";
+    ctx.arc(300,300,100,0,Math.PI*2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.restore();
+    ctx.fillStyle = "blue";
+    ctx.arc(350,250,100,0,Math.PI*2);
+    ctx.fill();
+    //默认效果 source-over
+    //source-in
+</script>
