@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>图像合成</title>
+    <style>
+        body {
+            background: #ddd;
+            border: thin inset #fff;
+        }
+
+        .canvas {
+            background: #fff;
+            float: left;
+            margin-left: 10px;
+        }
+        h4{
+            clear: both;
+        }
+    </style>
+</head>
+<body>
+<h4>source-atop</h4>
+<canvas class="canvas" width="600" height="400"></canvas>
+<canvas id="source-atop" class="canvas" width="600" height="400"></canvas>
+
+<h4>source-out</h4>
+<canvas class="canvas" width="600" height="400"></canvas>
+<canvas id="source-out" class="canvas" width="600" height="400"></canvas>
+
+<h4>source-in</h4>
+<canvas class="canvas" width="600" height="400"></canvas>
+<canvas id="source-in" class="canvas" width="600" height="400"></canvas>
+
+
+<h4>source-over</h4>
+<canvas class="canvas" width="600" height="400"></canvas>
+<canvas id="source-over" class="canvas" width="600" height="400"></canvas>
+
+
+<h4>destination-atop</h4>
+<canvas class="canvas" width="600" height="400"></canvas>
+<canvas id="destination-atop" class="canvas" width="600" height="400"></canvas>
+
+
+<h4>destination-in</h4>
+<canvas class="canvas" width="600" height="400"></canvas>
+<canvas id="destination-in" class="canvas" width="600" height="400"></canvas>
+
+
+<h4>destination-out</h4>
+<canvas class="canvas" width="600" height="400"></canvas>
+<canvas id="destination-out" class="canvas" width="600" height="400"></canvas>
+
+
+<h4>destination-over</h4>
+<canvas class="canvas" width="600" height="400"></canvas>
+<canvas id="destination-over" class="canvas" width="600" height="400"></canvas>
+
+
+<h4>lighter</h4>
+<canvas class="canvas" width="600" height="400"></canvas>
+<canvas id="lighter" class="canvas" width="600" height="400"></canvas>
+
+
+<h4>copy</h4>
+<canvas class="canvas" width="600" height="400"></canvas>
+<canvas id="copy" class="canvas" width="600" height="400"></canvas>
+
+
+<h4>xor</h4>
+<canvas class="canvas" width="600" height="400"></canvas>
+<canvas id="xor" class="canvas" width="600" height="400"></canvas>
+</body>
+</html>
+<script src="http://www.jq22.com/jquery/jquery-2.1.1.js"></script>
+<script>
+    let Composite = function (ctx) {
+        this.ctx = ctx;
+        this.normal = function () {
+            this.ctx.save();
+            this.drawSquare(300,300,100,100,'red');
+            this.drawSquare(250, 250, 100, 100, 'blue');
+        };
+        //画圆
+        this.drawArc = function (x, y, r, color) {
+            this.ctx.beginPath();
+            this.ctx.fillStyle = color;
+            this.ctx.arc(x, y, r, 0, Math.PI * 2);
+            this.ctx.fill();
+        };
+        //画方形
+        this.drawSquare = function (x, y, width, height, color) {
+            this.ctx.beginPath();
+            this.ctx.fillStyle = color;
+            this.ctx.fillRect(x, y, width, height);
+        }
+    };
+    //原图
+    $(".canvas:even").each(function () {
+        let t = new Composite($(this)[0].getContext("2d"));
+        t.normal();
+    });
+    //复合
+    let composite = [
+        'source-atop','source-in','source-out','source-over','destination-atop',
+        'destination-in','destination-out','destination-over','lighter','copy','xor'
+    ];
+    let obj = {};
+    composite.forEach(function (value) {
+        let t = document.getElementById(value).getContext("2d");
+        obj[value] = new Composite(t);
+    });
+    for(let i in obj){
+        obj[i].drawSquare(300,300,100,100,'red');
+        obj[i].ctx.globalCompositeOperation = i;
+        obj[i].drawSquare(250,250,100,100,'blue')
+    }
+</script>

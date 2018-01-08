@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>百事可乐logo</title>
+    <style>
+        body{
+            background: #ddd;
+            border: thin inset #ddd;
+        }
+        #canvas{
+            background: #fff;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas" width="800" height="600"></canvas>
+</body>
+</html>
+<script>
+    let ctx = document.getElementById("canvas").getContext("2d");
+    //step1 上半身
+    ctx.save();
+    ctx.fillStyle = "red";
+    let linearGradient = ctx.createLinearGradient(400,250,400,200);
+    linearGradient.addColorStop(0,"white");
+    linearGradient.addColorStop(1,"red");
+
+    ctx.arc(400,250,100,0,Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.globalCompositeOperation = "source-atop";
+
+    //下半身
+    let linearGradient2 = ctx.createLinearGradient(400,300,400,250);
+    linearGradient2.addColorStop(1,"blue");
+    ctx.fillStyle = linearGradient2;
+    ctx.rect(300,250,200,100);
+    ctx.fill();
+
+    //填充
+    ctx.restore();
+    ctx.save();
+    ctx.beginPath();
+    ctx.shadowColor = "white";
+    ctx.shadowOffsetX = 4;
+    ctx.shadowOffsetY = 4;
+    ctx.shadowBlur = 1;
+    ctx.globalCompositeOperation = "source-atop";
+    ctx.fillStyle = "white";
+    let angel = Math.PI / 180 * 80;
+    let dot1 = {
+        x:400 + Math.sin(angel) * 100,
+        y:250 - Math.cos(angel) * 100
+    };
+    //1111
+    ctx.moveTo(dot1.x,dot1.y);
+    ctx.bezierCurveTo(
+        450,210,
+        350,265,
+        400 - Math.sin(angel) * 100, 250 - Math.cos(angel) * 100
+    );
+
+    ctx.quadraticCurveTo(250,250,400 - Math.sin(angel) * 100, 250 + Math.cos(angel) * 100);
+    //ctx.lineTo(400 - Math.sin(angel) * 100, 250 + Math.cos(angel) * 100);
+    ctx.bezierCurveTo(
+        350,280,
+        450,225,
+        400 + Math.sin(angel) * 100,
+        250 + Math.cos(angel) * 100
+    );
+    ctx.quadraticCurveTo(550,225,400 + Math.sin(angel) * 100, 250 - Math.cos(angel) * 100);
+    ctx.fill();
+
+    //2222
+    ctx.moveTo(dot1.x,dot1.y);
+    ctx.bezierCurveTo(
+        450,210,
+        350,265,
+        400 - Math.sin(angel) * 100, 250 - Math.cos(angel) * 100
+    );
+
+    ctx.quadraticCurveTo(250,250,400 - Math.sin(angel) * 100, 250 + Math.cos(angel) * 100);
+    //ctx.lineTo(400 - Math.sin(angel) * 100, 250 + Math.cos(angel) * 100);
+    ctx.bezierCurveTo(
+        350,280,
+        450,225,
+        400 + Math.sin(angel) * 100,
+        250 + Math.cos(angel) * 100
+    );
+    ctx.quadraticCurveTo(550,225,400 + Math.sin(angel) * 100, 250 - Math.cos(angel) * 100);
+    ctx.shadowColor = "white";
+    ctx.shadowOffsetX = -4;
+    ctx.shadowOffsetY = -4;
+    ctx.shadowBlur = 1;
+    ctx.fill();
+    //阴影
+    ctx.restore();
+    ctx.beginPath();
+    ctx.fillStyle = "white";
+    ctx.shadowColor = "grey";
+    ctx.shadowOffsetX = 4;
+    ctx.shadowOffsetY = 4;
+    ctx.shadowBlur = 2;
+    ctx.globalCompositeOperation = "destination-over";
+    ctx.arc(400,250,100,0,Math.PI * 2);
+    ctx.fill();
+</script>
