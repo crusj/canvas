@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>聚光灯效果</title>
+    <style>
+        body {
+            background: #fff;
+            text-align: center;
+        }
+
+        #canvas {
+            width: 700px;
+            height: 432px;
+            background: url("../img/zard1.jpeg");
+        }
+        #canvas2 {
+            width: 400px;
+            height: 500px;
+            background: url("../img/zard2.jpg");
+        }
+    </style>
+</head>
+<body>
+<canvas id="canvas" width="700" height="432"></canvas>
+<canvas id="canvas2" width="400" height="500"></canvas>
+</body>
+</html>
+<script>
+    let ctx = document.getElementById("canvas").getContext("2d"),
+        ctx2 = document.getElementById("canvas2").getContext("2d"),
+        canvas = ctx.canvas,
+        canvas2 = ctx2.canvas;
+    //黑布
+    ctx.rect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "rgb(0,0,0)";
+    ctx.fill();
+    ctx2.rect(0, 0, canvas2.width, canvas2.height);
+    ctx2.fillStyle = "rgb(0,0,0)";
+    ctx2.fill();
+    //聚光灯
+    let Light = function (ctx, r) {
+        this.ctx = ctx;
+        this.canvas = this.ctx.canvas;
+        this.oldImage = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+        this.r = r;
+        this.x = 0;
+        this.y = 0;
+        this.light = function () {
+            //线性渐变
+            this.ctx.save();
+            this.ctx.beginPath();
+            this.ctx.globalCompositeOperation = "destination-out";
+            let ra = this.ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.r);
+            ra.addColorStop(0, 'rgba(255,255,255,1');
+            ra.addColorStop(0.7, 'rgba(255,255,255,1');
+            ra.addColorStop(1, 'rgba(255,255,255,0');
+            this.ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+            this.ctx.fillStyle = ra;
+            this.ctx.fill();
+            this.ctx.restore();
+        };
+        this.init = function () {
+            let self = this;
+            this.canvas.onmousemove = function (e) {
+                e.preventDefault();
+                self.ctx.clearRect(0,0,self.canvas.width,self.canvas.height);
+                self.ctx.putImageData(self.oldImage, 0, 0);
+                self.x = e.clientX - self.canvas.offsetLeft;
+                self.y = e.clientY - self.canvas.offsetTop;
+                self.light();
+
+            }
+        }
+    };
+    let l = new Light(ctx, 100);
+    l.init();
+    let l2 = new Light(ctx2, 100);
+    l2.init();
+</script>
